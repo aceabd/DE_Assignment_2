@@ -6,13 +6,13 @@ from airflow.operators.python_operator import PythonOperator
 
 
 default_args = {
-    'owner': 'Tamer',
-    'start_date': dt.datetime(2021, 5, 27),
+    'owner': 'Abdullatif',
+    'start_date': dt.datetime(2022, 5, 31),
     'retries': 5,
     'retry_delay': dt.timedelta(minutes=1)
 }
  
-with DAG('dag_daily_covid19_uk_scoring_report_postgres', default_args=default_args, schedule_interval=timedelta(days=1), catchup=False) as dag:
+with DAG('Extract_UK_Data', default_args=default_args, schedule_interval=timedelta(days=1), catchup=False) as dag:
     def _install_packages():
         try:
             import psycopg2 
@@ -100,7 +100,6 @@ with DAG('dag_daily_covid19_uk_scoring_report_postgres', default_args=default_ar
 
 
     def _get_uk_covid19_daily_reports():
-        # I had to reimport the packages
         import pandas as pd
 
         df_all = []
@@ -121,7 +120,6 @@ with DAG('dag_daily_covid19_uk_scoring_report_postgres', default_args=default_ar
 
     
     def _plot_and_save_uk_covid19_scoring_report_to_csv():
-        # I had to reimport the packages
         import pandas as pd
         from sklearn.preprocessing import MinMaxScaler
         import matplotlib.pyplot as plt
@@ -148,7 +146,6 @@ with DAG('dag_daily_covid19_uk_scoring_report_postgres', default_args=default_ar
 
 
     def _insert_uk_covid19_scoring_report_to_postgres_table():
-        # I had to reimport the packages
         import pandas as pd
         from sqlalchemy import create_engine
 
@@ -166,7 +163,6 @@ with DAG('dag_daily_covid19_uk_scoring_report_postgres', default_args=default_ar
 
         engine.dispose()
 
-    # Airflow DAG Operators
     install_packages = PythonOperator(
         task_id="install_packages",
          python_callable=_install_packages
